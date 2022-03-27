@@ -13,7 +13,7 @@ def main(argv: List[str], stream: TextIO) -> int:
 
     cmd_class: Optional[Type[Command]]
     for name, cmd_class in COMMANDS.items():
-        subparser = subparsers.add_parser(name=name)
+        subparser = subparsers.add_parser(name=name, help=cmd_class.__doc__)
         subparser.set_defaults(cmd=cmd_class)
         cmd_class.init_parser(subparser)
 

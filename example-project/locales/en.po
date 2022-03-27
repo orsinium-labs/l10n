@@ -1,0 +1,7 @@
+#
+msgid ""
+msgstr ""
+
+#. ./example-project/example_project/example.py:8
+msgid "Hello, {user_name}!"
+msgstr ""

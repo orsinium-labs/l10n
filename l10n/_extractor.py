@@ -20,6 +20,10 @@ class Message(NamedTuple):
     def location(self) -> str:
         return f'{self.file_name}:{self.line}'
 
+    @property
+    def path(self) -> Path:
+        return Path(self.file_name)
+
 
 def extract_messages(project_path: Path) -> Iterator[Message]:
     config = f'[mypy]\nplugins = {__name__}'
