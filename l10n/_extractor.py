@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import sys
 import subprocess
-from typing import Iterator, Optional
+from typing import Iterator, NamedTuple, Optional
 from mypy.plugin import Plugin, MethodContext
 from mypy import types
 from tempfile import NamedTemporaryFile
@@ -10,7 +10,18 @@ from tempfile import NamedTemporaryFile
 PREFIX = '__L10N__:'
 
 
-def extract_messages(project_path: Path) -> Iterator[str]:
+class Message(NamedTuple):
+    text: str
+    line: int
+    column: int
+    file_name: str
+
+    @property
+    def location(self) -> str:
+        return f'{self.file_name}:{self.line}'
+
+
+def extract_messages(project_path: Path) -> Iterator[Message]:
     config = f'[mypy]\nplugins = {__name__}'
     with NamedTemporaryFile() as tmp_file:
         tmp_file.write(config.encode())
@@ -28,8 +39,7 @@ def extract_messages(project_path: Path) -> Iterator[str]:
         if not line.startswith(PREFIX):
             continue
         line = line[len(PREFIX):].strip()
-        data = json.loads(line)
-        yield data['message']
+        yield Message(**json.loads(line))
 
 
 class LookupPlugin(Plugin):
@@ -40,7 +50,12 @@ class LookupPlugin(Plugin):
     def _extractor(self, context: MethodContext):
         message = self._get_message(context)
         if message:
-            self._record(message=message)
+            self._record(
+                text=message,
+                line=context.context.line,
+                column=context.context.column,
+                file_name=context.api.path,
+            )
         return context.default_return_type
 
     def _get_message(self, context: MethodContext) -> Optional[str]:
