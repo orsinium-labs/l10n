@@ -26,6 +26,19 @@ class Generate(Command):
             catalog = root / 'locales'
             catalog.mkdir(exist_ok=True)
             file_path = catalog / f'{self.args.lang}.po'
+            po_file.metadata = {
+                # 'Project-Id-Version': '',
+                # 'Report-Msgid-Bugs-To': '',
+                # 'POT-Creation-Date': '',
+                # 'PO-Revision-Date': '',
+                # 'Last-Translator': '',
+                # 'Language-Team': '',
+                'Language': self.args.lang,
+                'MIME-Version': '1.0',
+                # 'Content-Type': '',
+                # 'Content-Transfer-Encoding': '',
+                # 'Plural-Forms': '',
+            }
             po_file.save(str(file_path))
         return 0
 
@@ -33,7 +46,7 @@ class Generate(Command):
         return polib.POEntry(
             msgid=msg.text,
             msgstr='',
-            comment=f'{msg.location}',
+            occurrences=[(msg.file_name, msg.line)],
         )
 
     def _find_project_root(self, file_path: Path) -> Path:

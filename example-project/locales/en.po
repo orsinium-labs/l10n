@@ -1,7 +1,9 @@
 #
 msgid ""
 msgstr ""
+"Language: en\n"
+"MIME-Version: 1.0\n"
 
-#. ./example-project/example_project/example.py:8
+#: ./example-project/example_project/example.py:8
 msgid "Hello, {user_name}!"
 msgstr ""

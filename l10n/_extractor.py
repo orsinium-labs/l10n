@@ -17,10 +17,6 @@ class Message(NamedTuple):
     file_name: str
 
     @property
-    def location(self) -> str:
-        return f'{self.file_name}:{self.line}'
-
-    @property
     def path(self) -> Path:
         return Path(self.file_name)
 
