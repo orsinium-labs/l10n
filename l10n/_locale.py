@@ -15,7 +15,6 @@ Messages = Dict[MsgID, str]
 
 @dataclass
 class Locale:
-    project: str
     language: str
     path: Path
 
