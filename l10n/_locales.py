@@ -18,7 +18,7 @@ class Locales:
     project: str = ''
     catalog: Path = DEFAULT_CATALOG
     format: Optional[str] = None
-    extension: Optional[str] = None
+    extension: str = '.mo'
 
     def get(self, language: str) -> Optional[Locale]:
         """Find locale file for the given language.
@@ -69,19 +69,14 @@ class Locales:
         if self.format is not None:
             return self.format.replace('{language}', '*')
         for format in self._default_formats:
-            for ext in self._extensions:
-                pattern = format.format(language='*', project=self.project, ext=ext)
-                for _ in self.catalog.glob(pattern):
-                    return pattern
+            pattern = format.format(
+                language='*',
+                project=self.project,
+                ext=self.extension,
+            )
+            for _ in self.catalog.glob(pattern):
+                return pattern
         raise FileNotFoundError('No locales found. Try specifying `Locale.format`.')
-
-    @property
-    def _extensions(self) -> Iterator[str]:
-        if self.extension:
-            yield self.extension
-        else:
-            yield '.mo'
-            yield '.po'
 
     @property
     def _default_formats(self) -> Iterator[str]:
@@ -89,6 +84,7 @@ class Locales:
             yield '{language}/LC_MESSAGES/{project}{ext}'
             yield '{project}/{language}{ext}'
             yield '{language}/{project}{ext}'
+            yield '{project}-{language}{ext}'
         else:
             yield '{language}{ext}'
 

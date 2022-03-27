@@ -45,13 +45,6 @@ class Locale:
 
     @cached_property
     def _messages(self) -> Messages:
-        ext = self.path.suffix
-        if ext == '.mo':
-            return self._messages_mo
-        raise NotImplementedError(f'the locale extension is not supported: {ext}')
-
-    @property
-    def _messages_mo(self) -> Messages:
         with self.path.open('rb') as stream:
             tr = gettext.GNUTranslations(stream)    # type: ignore[arg-type]
         self._plural_id = tr.plural                 # type: ignore
