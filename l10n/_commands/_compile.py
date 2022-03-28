@@ -1,8 +1,10 @@
 from argparse import ArgumentParser
 from pathlib import Path
+
 import polib
-from ._base import Command
+
 from .._project import Project, find_project_root
+from ._base import Command
 
 
 class Compile(Command):

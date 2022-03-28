@@ -1,7 +1,8 @@
-from pathlib import Path
 import sys
 from argparse import ArgumentParser
+from pathlib import Path
 from typing import List, NoReturn, Optional, TextIO, Type
+
 from ._commands import COMMANDS, Command
 
 

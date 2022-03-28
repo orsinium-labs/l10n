@@ -1,11 +1,10 @@
 
 
-from pathlib import Path
-from typing import Dict, Mapping, Optional, Tuple, Union
+import gettext
 from dataclasses import dataclass
 from functools import cached_property
-import gettext
-
+from pathlib import Path
+from typing import Dict, Mapping, Optional, Tuple, Union
 
 SingularID = str
 PluralID = Tuple[str, int]

@@ -1,4 +1,5 @@
 from pathlib import Path
+
 from l10n._locale import Locale
 
 

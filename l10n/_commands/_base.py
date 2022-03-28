@@ -1,9 +1,9 @@
 
 
-from argparse import ArgumentParser, Namespace
 import sys
-from typing import TextIO
+from argparse import ArgumentParser, Namespace
 from dataclasses import dataclass
+from typing import TextIO
 
 
 @dataclass

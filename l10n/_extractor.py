@@ -1,11 +1,12 @@
 import json
-from pathlib import Path
-import sys
 import subprocess
-from typing import Iterator, NamedTuple, Optional
-from mypy.plugin import Plugin, MethodContext
-from mypy import types
+import sys
+from pathlib import Path
 from tempfile import NamedTemporaryFile
+from typing import Iterator, NamedTuple, Optional
+
+from mypy import types
+from mypy.plugin import MethodContext, Plugin
 
 PREFIX = '__L10N__:'
 

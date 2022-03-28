@@ -1,13 +1,14 @@
 
 
-import os
-from pathlib import Path
-import re
-from typing import FrozenSet, Iterator, Optional, Pattern, Tuple
-import inspect
-from functools import cached_property
-from ._locale import Locale
 import fnmatch
+import inspect
+import os
+import re
+from functools import cached_property
+from pathlib import Path
+from typing import FrozenSet, Iterator, Optional, Pattern, Tuple
+
+from ._locale import Locale
 
 
 class Locales:

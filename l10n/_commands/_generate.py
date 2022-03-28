@@ -3,10 +3,12 @@ from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import DefaultDict
+
 import polib
+
+from .._extractor import Message, extract_messages
+from .._project import Project, find_project_root
 from ._base import Command
-from .._extractor import extract_messages, Message
-from .._project import find_project_root, Project
 
 
 class Generate(Command):

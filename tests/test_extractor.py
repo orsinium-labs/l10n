@@ -1,6 +1,6 @@
 from pathlib import Path
-from l10n._extractor import extract_messages
 
+from l10n._extractor import extract_messages
 
 ROOT = Path(__file__).parent.parent
 
