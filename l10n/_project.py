@@ -97,6 +97,52 @@ class Project:
         """
         return self.author_email
 
+    @cached_property
+    def po_dir(self) -> str:
+        """Name of the directory with po files in the project root dir.
+        """
+        with suppress(KeyError):
+            return self._meta['tool']['l10n']['po_dir']
+        return 'locales'
+
+    @cached_property
+    def po_root(self) -> Path:
+        return self.root / self.po_dir
+
+    @cached_property
+    def mo_dir(self) -> str:
+        """Name of the directory with mo files in the package dir.
+        """
+        with suppress(KeyError):
+            return self._meta['tool']['l10n']['mo_dir']
+        return 'locales'
+
+    @cached_property
+    def mo_root(self) -> Path:
+        return self.package_path / self.mo_dir
+
+    @cached_property
+    def package_path(self) -> Path:
+        """Path to the Python source code of the project.
+        """
+        # First try the same name as the project name
+        path = self.root / self.name.replace('-', '_')
+        if (path / '__init__.py').exists():
+            return path
+
+        # Also look into ./src/
+        path = self.root / 'src' / self.name.replace('-', '_')
+        if (path / '__init__.py').exists():
+            return path
+
+        # At last, try to find any path with __init__.py in it
+        for path in self.root.iterdir():
+            if path.name == 'tests':
+                continue
+            if (path / '__init__.py').exists():
+                return path
+        raise FileNotFoundError("cannot find the package")
+
     # PRIVATE
 
     @cached_property

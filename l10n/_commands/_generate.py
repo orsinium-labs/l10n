@@ -32,9 +32,8 @@ class Generate(Command):
         now = datetime.fromisoformat(self.args.now).strftime("%F %H:%M%z")
         for root, po_file in files.items():
             project = Project(root)
-            catalog = root / 'locales'
-            catalog.mkdir(exist_ok=True)
-            file_path = catalog / f'{self.args.lang}.po'
+            project.po_root.mkdir(exist_ok=True)
+            file_path = project.po_root / f'{self.args.lang}.po'
             po_file.metadata = {
                 'Project-Id-Version': f'{project.name} {project.version}',
                 'Report-Msgid-Bugs-To': project.bug_tracker,
