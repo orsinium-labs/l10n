@@ -11,8 +11,8 @@ from .._project import Project, find_project_root
 from ._base import Command
 
 
-class Generate(Command):
-    """Generate a `.po` file for a language.
+class Extract(Command):
+    """Generate a `.po` file for a language based on messages in the code.
     """
     @staticmethod
     def init_parser(parser: ArgumentParser) -> None:
