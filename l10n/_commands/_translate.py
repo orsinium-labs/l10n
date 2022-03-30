@@ -27,6 +27,8 @@ class Translate(Command):
         project = Project(project_root)
         translator = Translator()
         for po_path in project.po_root.iterdir():
+            if po_path.suffix != '.po':
+                continue
             print(po_path.stem)
             po_file = polib.pofile(str(po_path))
             for entry in po_file:

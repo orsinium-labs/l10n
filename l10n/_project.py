@@ -136,12 +136,20 @@ class Project:
         if (path / '__init__.py').exists():
             return path
 
-        # At last, try to find any path with __init__.py in it
+        # Try to find any path with __init__.py in it
         for path in self.root.iterdir():
             if path.name == 'tests':
                 continue
             if (path / '__init__.py').exists():
                 return path
+        # try to find any directory with a Python file in it
+        for path in self.root.iterdir():
+            if path.name == 'tests':
+                continue
+            for _ in path.glob('*.py'):
+                return path
+        for _ in self.root.glob('*.py'):
+            return self.root
         raise FileNotFoundError("cannot find the package")
 
     # PRIVATE

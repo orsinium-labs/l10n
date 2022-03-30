@@ -22,7 +22,7 @@ Features:
 Install l10n:
 
 ```bash
-python3 -m pip install l10n
+python3 -m pip install 'l10n[cli]'
 ```
 
 And there are all the changes you need to do in your code to support translations for a string:
@@ -42,7 +42,7 @@ Now, let's translate it to Ukrainian:
 1. Extract all strings from the code that need to be translated:
 
     ```bash
-    python3 -m l10n extract --lang ua
+    python3 -m l10n extract --lang uk
     ```
 
 1. Translate all extracted strings using Google Translate:
@@ -61,7 +61,8 @@ That's all! Now, your code supports translations:
 
 ```python
 from example import say_hello
-say_hello(lang='ua')
+say_hello(lang='uk')
+# Привіт Світ!
 ```
 
 If you want to manually adjust the translation text, just edit the `languages/en.po` file and run `compile` again. You don't even need to restart your app!
