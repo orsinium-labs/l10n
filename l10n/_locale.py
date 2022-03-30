@@ -14,7 +14,6 @@ Messages = Dict[MsgID, str]
 
 @dataclass
 class Locale:
-    language: str
     path: Path
 
     def get(
@@ -41,12 +40,26 @@ class Locale:
             translation = translation.format(**vars)
         return translation
 
+    @property
+    def language(self) -> str:
+        return self._headers.get('language', '')
+
+    # PRIVATE
+
     @cached_property
     def _messages(self) -> Messages:
         with self.path.open('rb') as stream:
             tr = gettext.GNUTranslations(stream)    # type: ignore[arg-type]
         self._plural_id = tr.plural                 # type: ignore
         return tr._catalog                          # type: ignore[attr-defined]
+
+    @cached_property
+    def _headers(self) -> Dict[str, str]:
+        headers = {}
+        for line in self._messages[''].splitlines():
+            key, _, value = line.partition(':')
+            headers[key.strip().lower()] = value.strip()
+        return headers
 
     def _plural_id(self, n: int) -> int:
         return int(n != 1)

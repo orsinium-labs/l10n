@@ -2,7 +2,6 @@
 
 import fnmatch
 import inspect
-import os
 import re
 from functools import cached_property
 from pathlib import Path
@@ -37,7 +36,7 @@ class Locales:
         path = self._path_to(language)
         if not path.exists():
             return None
-        return Locale(language=language, path=path)
+        return Locale(path)
 
     @cached_property
     def languages(self) -> FrozenSet[str]:
@@ -51,19 +50,10 @@ class Locales:
         """
         locales = []
         for path in self.path.glob(self._pattern):
-            language = self._extract_language(path)
-            locale = Locale(language=language, path=path)
-            locales.append(locale)
+            locales.append(Locale(path))
         return tuple(locales)
 
     # PRIVATE
-
-    def _extract_language(self, path: Path) -> str:
-        path = path.relative_to(self.path)
-        text = str(path).replace(os.path.sep, '/')
-        match = self._rex.fullmatch(text)
-        assert match, "cannot extract language from path"
-        return match.group(1)
 
     def _path_to(self, language: str) -> Path:
         parts = self.format.format(language=language).split('/')

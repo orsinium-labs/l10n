@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import DefaultDict
 
 import polib
+import l10n
 
 from .._extractor import Message, extract_messages
 from .._project import Project, find_project_root
@@ -49,6 +50,7 @@ class Extract(Command):
                 'Content-Type': 'text/plain; charset=UTF-8',
                 'Content-Transfer-Encoding': '8bit',
                 'Plural-Forms': 'nplurals=2; plural=n == 1 ? 0 : 1;',
+                'Generated-By': f'l10n {l10n.__version__}',
             }
             po_file.save(str(file_path))
         return 0
