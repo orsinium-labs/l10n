@@ -1,4 +1,54 @@
+[build-system]
+requires = ["flit_core >=3.2,<4"]
+build-backend = "flit_core.buildapi"
 
+[project]
+name = "l10n"
+authors = [
+    {name = "Gram", email = "gram@orsinium.dev"},
+]
+license = {file = "LICENSE"}
+readme = "README.md"
+requires-python = ">=3.7"
+dynamic = ["version", "description"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Topic :: Software Development",
+    "Topic :: Software Development :: Internationalization",
+    "Topic :: Software Development :: Localization",
+    "Topic :: Text Processing :: Linguistic",
+    "Typing :: Typed",
+]
+keywords = [
+    "localization",
+    "internationalization",
+    "l10n",
+    "i18n",
+    "locale",
+    "locales",
+    "translation",
+    "gettext",
+]
+dependencies = []
+
+[project.optional-dependencies]
+cli = [
+    "tomli",
+    "polib",
+    "googletrans==4.0.0rc1",
+]
+test = ["pytest"]
+lint = [
+    "flake8-length",
+    "mypy",
+    "isort",
+]
+
+[project.urls]
+Source = "https://github.com/life4/l10n"
 
 [tool.mypy]
 files = ["l10n", "tests"]

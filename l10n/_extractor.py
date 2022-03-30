@@ -31,6 +31,7 @@ def extract_messages(project_path: Path) -> Iterator[Message]:
             sys.executable, '-m', 'mypy',
             '--no-incremental',
             '--show-traceback',
+            '--check-untyped-defs',
             '--config-file', tmp_file.name,
             str(project_path),
         ]

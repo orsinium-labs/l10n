@@ -30,6 +30,7 @@ class Extract(Command):
             files[root].append(entry)
 
         if not files:
+            self.print('No entries found')
             return 1
         now = datetime.fromisoformat(self.args.now).strftime("%F %H:%M%z")
         for root, po_file in files.items():
