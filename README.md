@@ -15,6 +15,8 @@ Features:
 + **Self-sufficient, no other tools required**.
 + **Asyncio-compatible and race-condition-free**.
 + **Fast**. All teanslations on the production are compiled into a small and fast binary format.
++ **Small**. We don't include any generated data into the library distribution. Just a little of Python code.
++ **Lazy**. Any data is loaded only when you need it.
 + **Can be used in libraries**. The compiled translations are automatically placed next to your Python code and discovered at runtime.
 
 ## l10n in 30 seconds
