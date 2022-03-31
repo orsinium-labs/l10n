@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import fnmatch
 import inspect
-import os
+import locale
 import re
 from functools import cached_property
 from pathlib import Path
@@ -70,12 +70,7 @@ class Locales:
     def system_language(self) -> str | None:
         """The current system language detected from env vars.
         """
-        for var_name in ('LANGUAGE', 'LC_ALL', 'LC_CTYPE', 'LANG'):
-            value = os.environ.get(var_name, '')
-            value = value.split(':')[0].split('.')[0]
-            if value:
-                return value
-        return ''
+        return locale.getdefaultlocale()[0]
 
     # PRIVATE
 
