@@ -1,18 +1,19 @@
+from __future__ import annotations
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
-from typing import List, NoReturn, Optional, TextIO, Type
+from typing import NoReturn, TextIO
 
 from ._commands import COMMANDS, Command
 
 
-def main(argv: List[str], stream: TextIO) -> int:
+def main(argv: list[str], stream: TextIO) -> int:
     exe = Path(sys.executable).name
     parser = ArgumentParser(f"{exe} -m l10n")
     subparsers = parser.add_subparsers()
     parser.set_defaults(cmd=None)
 
-    cmd_class: Optional[Type[Command]]
+    cmd_class: type[Command] | None
     for name, cmd_class in COMMANDS.items():
         subparser = subparsers.add_parser(name=name, help=cmd_class.__doc__)
         subparser.set_defaults(cmd=cmd_class)

@@ -1,15 +1,13 @@
-
-
+from __future__ import annotations
 import gettext
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Dict, Mapping, Optional, Tuple, Union
+from typing import Tuple, Union
 
 SingularID = str
 PluralID = Tuple[str, int]
 MsgID = Union[SingularID, PluralID]
-Messages = Dict[MsgID, str]
 
 
 @dataclass
@@ -19,10 +17,10 @@ class Locale:
     def get(
         self,
         message: str, *,
-        context: Optional[str] = None,
-        default: Optional[str] = None,
-        n: Optional[int] = None,
-        vars: Optional[Mapping[str, str]] = None,
+        context: str | None = None,
+        default: str | None = None,
+        n: int | None = None,
+        comment: str = "",
     ) -> str:
         # lookup the message
         msgid_str = message
@@ -36,8 +34,6 @@ class Locale:
         # postprocess the message
         if translation is None:
             translation = default or message
-        if vars is not None:
-            translation = translation.format(**vars)
         return translation
 
     @property
@@ -47,14 +43,14 @@ class Locale:
     # PRIVATE
 
     @cached_property
-    def _messages(self) -> Messages:
+    def _messages(self) -> dict[MsgID, str]:
         with self.path.open('rb') as stream:
             tr = gettext.GNUTranslations(stream)    # type: ignore[arg-type]
         self._plural_id = tr.plural                 # type: ignore
         return tr._catalog                          # type: ignore[attr-defined]
 
     @cached_property
-    def _headers(self) -> Dict[str, str]:
+    def _headers(self) -> dict[str, str]:
         headers = {}
         for line in self._messages[''].splitlines():
             key, _, value = line.partition(':')

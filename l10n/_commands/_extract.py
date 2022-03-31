@@ -1,8 +1,8 @@
+from __future__ import annotations
 from argparse import ArgumentParser
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import DefaultDict
 
 import polib
 import l10n
@@ -24,7 +24,7 @@ class Extract(Command):
         parser.add_argument('--now', default=now.isoformat())
 
     def run(self) -> int:
-        files: DefaultDict[Path, polib.POFile]
+        files: defaultdict[Path, polib.POFile]
         files = defaultdict(polib.POFile)
         for msg in extract_messages(self.args.path):
             entry = self._msg_to_entry(msg)
