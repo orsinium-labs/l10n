@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from aenum import NamedTuple
+from typing import NamedTuple
 
 
 class Plural(NamedTuple):

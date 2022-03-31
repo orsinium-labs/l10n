@@ -36,27 +36,17 @@ class Extract(Command):
         if not files:
             self.print('No entries found')
             return 1
-        now = datetime.fromisoformat(self.args.now).strftime('%F %H:%M%z')
         for root, po_file in files.items():
-            lang: str = self.args.lang
             project = Project(root)
             project.po_root.mkdir(exist_ok=True)
-            file_path = project.po_root / f'{lang}.po'
-            plurals = PLURALS.get(lang, GERMANIC)
-            po_file.metadata = {
-                'Project-Id-Version': f'{project.name} {project.version}',
-                'Report-Msgid-Bugs-To': project.bug_tracker,
-                'POT-Creation-Date': now,
-                'PO-Revision-Date': now,
-                'Last-Translator': project.author,
-                'Language-Team': project.author,
-                'Language': lang,
-                'MIME-Version': '1.0',
-                'Content-Type': 'text/plain; charset=UTF-8',
-                'Content-Transfer-Encoding': '8bit',
-                'Plural-Forms': str(plurals),
-                'Generated-By': f'l10n {l10n.__version__}',
-            }
+            file_path = project.po_root / f'{self.args.lang}.po'
+
+            if file_path.exists():
+                old_file = polib.pofile(str(file_path))
+                old_file.merge(po_file)
+                po_file = old_file
+
+            self._set_meta(project, po_file)
             po_file.save(str(file_path))
         return 0
 
@@ -66,3 +56,21 @@ class Extract(Command):
             msgstr='',
             occurrences=[(msg.file_name, msg.line)],
         )
+
+    def _set_meta(self, project: Project, po_file: polib.POFile) -> None:
+        now = datetime.fromisoformat(self.args.now).strftime('%F %H:%M%z')
+        lang: str = self.args.lang
+        plurals = PLURALS.get(lang, GERMANIC)
+
+        po_file.metadata['Project-Id-Version'] = f'{project.name} {project.version}'
+        po_file.metadata.setdefault('Report-Msgid-Bugs-To', project.bug_tracker)
+        po_file.metadata.setdefault('POT-Creation-Date', now)
+        po_file.metadata['PO-Revision-Date'] = now
+        po_file.metadata.setdefault('Last-Translator', project.author)
+        po_file.metadata.setdefault('Language-Team', project.author)
+        po_file.metadata.setdefault('Language', lang)
+        po_file.metadata.setdefault('MIME-Version', '1.0')
+        po_file.metadata.setdefault('Content-Type', 'text/plain; charset=UTF-8')
+        po_file.metadata.setdefault('Content-Transfer-Encoding', '8bit')
+        po_file.metadata.setdefault('Plural-Forms', str(plurals))
+        po_file.metadata['Generated-By'] = f'l10n {l10n.__version__}'
