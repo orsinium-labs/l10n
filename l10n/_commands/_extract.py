@@ -10,6 +10,7 @@ import l10n
 from .._extractor import Message, extract_messages
 from .._project import Project, find_project_root
 from ._base import Command
+from .._plurals import PLURALS, GERMANIC
 
 
 class Extract(Command):
@@ -35,9 +36,11 @@ class Extract(Command):
             return 1
         now = datetime.fromisoformat(self.args.now).strftime("%F %H:%M%z")
         for root, po_file in files.items():
+            lang: str = self.args.lang
             project = Project(root)
             project.po_root.mkdir(exist_ok=True)
-            file_path = project.po_root / f'{self.args.lang}.po'
+            file_path = project.po_root / f'{lang}.po'
+            plurals = PLURALS.get(lang, GERMANIC)
             po_file.metadata = {
                 'Project-Id-Version': f'{project.name} {project.version}',
                 'Report-Msgid-Bugs-To': project.bug_tracker,
@@ -45,11 +48,11 @@ class Extract(Command):
                 'PO-Revision-Date': now,
                 'Last-Translator': project.author,
                 'Language-Team': project.author,
-                'Language': self.args.lang,
+                'Language': lang,
                 'MIME-Version': '1.0',
                 'Content-Type': 'text/plain; charset=UTF-8',
                 'Content-Transfer-Encoding': '8bit',
-                'Plural-Forms': 'nplurals=2; plural=n == 1 ? 0 : 1;',
+                'Plural-Forms': str(plurals),
                 'Generated-By': f'l10n {l10n.__version__}',
             }
             po_file.save(str(file_path))
