@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 from argparse import ArgumentParser
 from pathlib import Path
 
@@ -41,7 +42,7 @@ class Compile(Command):
 
             # check if there is at least one translated entry
             if not any(e.translated() for e in po_file):
-                print("file is empty")
+                print('file is empty')
                 code += 1
                 continue
 

@@ -1,16 +1,18 @@
 from __future__ import annotations
+
 from argparse import ArgumentParser
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 
 import polib
+
 import l10n
 
 from .._extractor import Message, extract_messages
+from .._plurals import GERMANIC, PLURALS
 from .._project import Project, find_project_root
 from ._base import Command
-from .._plurals import PLURALS, GERMANIC
 
 
 class Extract(Command):
@@ -34,7 +36,7 @@ class Extract(Command):
         if not files:
             self.print('No entries found')
             return 1
-        now = datetime.fromisoformat(self.args.now).strftime("%F %H:%M%z")
+        now = datetime.fromisoformat(self.args.now).strftime('%F %H:%M%z')
         for root, po_file in files.items():
             lang: str = self.args.lang
             project = Project(root)

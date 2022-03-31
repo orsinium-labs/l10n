@@ -84,7 +84,7 @@ class Project:
             return self._meta['tool']['l10n']['author_email']
         with suppress(LookupError):
             return self._meta['project']['authors'][0]['email']
-        return ""
+        return ''
 
     @cached_property
     def author(self) -> str:
@@ -150,7 +150,7 @@ class Project:
                 return path
         for _ in self.root.glob('*.py'):
             return self.root
-        raise FileNotFoundError("cannot find the package")
+        raise FileNotFoundError('cannot find the package')
 
     # PRIVATE
 

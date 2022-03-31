@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import gettext
 from dataclasses import dataclass
 from functools import cached_property
@@ -20,7 +21,7 @@ class Locale:
         context: str | None = None,
         default: str | None = None,
         n: int | None = None,
-        comment: str = "",
+        comment: str = '',
     ) -> str:
         # lookup the message
         msgid_str = message

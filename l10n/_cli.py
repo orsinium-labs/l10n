@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import sys
 from argparse import ArgumentParser
 from pathlib import Path
@@ -9,7 +10,7 @@ from ._commands import COMMANDS, Command
 
 def main(argv: list[str], stream: TextIO) -> int:
     exe = Path(sys.executable).name
-    parser = ArgumentParser(f"{exe} -m l10n")
+    parser = ArgumentParser(f'{exe} -m l10n')
     subparsers = parser.add_subparsers()
     parser.set_defaults(cmd=None)
 

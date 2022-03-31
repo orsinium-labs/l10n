@@ -7,7 +7,7 @@ locales = Locales()
 
 def say_hello(name: str, lang: str = 'en') -> None:
     loc = locales[lang]
-    msg = loc.get("Hello, {user_name}!").format(user_name=name)
+    msg = loc.get('Hello, {user_name}!').format(user_name=name)
     print(msg)
 
 
