@@ -4,6 +4,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Iterator
 
 import polib
 
@@ -21,13 +22,13 @@ class Extract(Command):
     @staticmethod
     def init_parser(parser: ArgumentParser) -> None:
         parser.add_argument('--path', type=Path, default=Path())
-        parser.add_argument('--lang', default='en')
+        parser.add_argument('--lang')
         now = datetime.now(timezone.utc).astimezone()
         parser.add_argument('--now', default=now.isoformat())
 
     def run(self) -> int:
-        files: defaultdict[Path, polib.POFile]
-        files = defaultdict(polib.POFile)
+        files: defaultdict[Path, list[polib.POEntry]]
+        files = defaultdict(list)
         for msg in extract_messages(self.args.path):
             entry = self._msg_to_entry(msg)
             root = find_project_root(msg.path)
@@ -36,19 +37,30 @@ class Extract(Command):
         if not files:
             self.print('No entries found')
             return 1
-        for root, po_file in files.items():
+        for root, entries in files.items():
             project = Project(root)
             project.po_root.mkdir(exist_ok=True)
-            file_path = project.po_root / f'{self.args.lang}.po'
+            for lang in self._langs_for(project):
+                self.print(lang)
+                file_path = project.po_root / f'{lang}.po'
 
-            if file_path.exists():
-                old_file = polib.pofile(str(file_path))
-                old_file.merge(po_file)
-                po_file = old_file
-
-            self._set_meta(project, po_file)
-            po_file.save(str(file_path))
+                template_file = polib.POFile()
+                template_file.extend(entries)
+                if file_path.exists():
+                    target_file = polib.pofile(str(file_path))
+                    target_file.merge(template_file)
+                else:
+                    target_file = template_file
+                self._set_meta(project, target_file, lang)
+                target_file.save(str(file_path))
         return 0
+
+    def _langs_for(self, project: Project) -> Iterator[str]:
+        if self.args.lang:
+            yield self.args.lang
+            return
+        for po_file in project.po_root.iterdir():
+            yield po_file.stem
 
     def _msg_to_entry(self, msg: Message) -> polib.POEntry:
         return polib.POEntry(
@@ -57,9 +69,8 @@ class Extract(Command):
             occurrences=[(msg.file_name, msg.line)],
         )
 
-    def _set_meta(self, project: Project, po_file: polib.POFile) -> None:
+    def _set_meta(self, project: Project, po_file: polib.POFile, lang: str) -> None:
         now = datetime.fromisoformat(self.args.now).strftime('%F %H:%M%z')
-        lang: str = self.args.lang
         plurals = PLURALS.get(lang, GERMANIC)
 
         po_file.metadata['Project-Id-Version'] = f'{project.name} {project.version}'
