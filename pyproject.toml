@@ -40,7 +40,10 @@ cli = [
     "polib",
     "googletrans==4.0.0rc1",
 ]
-test = ["pytest"]
+test = [
+    "pytest",
+    "pytest-xdist",
+]
 lint = [
     "flake8-length",
     "mypy",

@@ -8,7 +8,7 @@ from typing import NoReturn, TextIO
 from ._commands import COMMANDS, Command
 
 
-def main(argv: list[str], stream: TextIO) -> int:
+def main(argv: list[str], stream: TextIO = sys.stdout) -> int:
     exe = Path(sys.executable).name
     parser = ArgumentParser(f'{exe} -m l10n')
     subparsers = parser.add_subparsers()
