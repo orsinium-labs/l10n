@@ -70,6 +70,9 @@ class Extract(Command):
             kwargs['msgctxt'] = msg.context
         if msg.plural is not None:
             kwargs['msgid_plural'] = msg.plural
+        flags = []
+        if '{' in msg.text:
+            flags.append('python-brace-format')
         return polib.POEntry(
             msgid=msg.text,
             msgstr='',

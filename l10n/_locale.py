@@ -42,7 +42,8 @@ class Locale:
                 two messages that may have a different translation depending
                 on the context they are used in. Represented as `msgctxt` in PO files.
             plural: the default value if `n > 1` and no translation found.
-                Represented as `msgid_plural` in PO files.
+                It also indicates for translator that the message should have
+                plural translations. Represented as `msgid_plural` in PO files.
             n: the number used to pick a plural form for the translation.
             comment: not used in runtime but included in PO files.
                 Use it to provide additional information for translators.

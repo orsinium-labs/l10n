@@ -49,3 +49,11 @@ def test_extract_plural(extract):
         Locales()['en'].get("{n} bird", plural="{n} birds", n=13)
     """)
     assert [e.msgid_plural for e in po_file] == ["{n} birds"]
+
+
+def test_extract_context(extract):
+    po_file: polib.POFile = extract("""
+        from l10n import Locales
+        Locales()['en'].get("open", context="a verb")
+    """)
+    assert [e.msgctxt for e in po_file] == ["a verb"]
