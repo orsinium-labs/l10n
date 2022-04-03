@@ -29,11 +29,24 @@ class Locale:
         self,
         message: str, *,
         context: str | None = None,
-        default: str | None = None,
+        plural: str | None = None,
         n: int | None = None,
         comment: str = '',
     ) -> str:
-        # lookup the message
+        """
+        Args:
+            message: the message to translate.
+                If no translation found, the message itself will be used.
+                Represented as `msgid` in PO files.
+            context: kind of namespace for translations, used to distinguish
+                two messages that may have a different translation depending
+                on the context they are used in. Represented as `msgctxt` in PO files.
+            plural: the default value if `n > 1` and no translation found.
+                Represented as `msgid_plural` in PO files.
+            n: the number used to pick a plural form for the translation.
+            comment: not used in runtime but included in PO files.
+                Use it to provide additional information for translators.
+        """
         msgid_str = message
         if context is not None:
             msgid_str = f'{context}\x04{msgid_str}'
@@ -42,10 +55,11 @@ class Locale:
             msgid = (msgid_str, self._plural_id(n))
         translation = self._messages.get(msgid)
 
-        # postprocess the message
-        if translation is None:
-            translation = default or message
-        return translation
+        if translation is not None:
+            return translation
+        if n is not None and n > 1:
+            return plural or message
+        return message
 
     @property
     def language(self) -> str:

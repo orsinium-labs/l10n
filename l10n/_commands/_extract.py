@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Iterator
+from typing import Any, Iterator
 
 import polib
 
@@ -63,10 +63,18 @@ class Extract(Command):
             yield po_file.stem
 
     def _msg_to_entry(self, msg: Message) -> polib.POEntry:
+        kwargs: dict[str, Any] = {}
+        if msg.comment:
+            kwargs['comment'] = msg.comment
+        if msg.context:
+            kwargs['msgctxt'] = msg.context
+        if msg.plural is not None:
+            kwargs['msgid_plural'] = msg.plural
         return polib.POEntry(
             msgid=msg.text,
             msgstr='',
             occurrences=[(msg.file_name, msg.line)],
+            **kwargs,
         )
 
     def _set_meta(self, project: Project, po_file: polib.POFile, lang: str) -> None:

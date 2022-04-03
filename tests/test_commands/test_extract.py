@@ -33,3 +33,19 @@ def test_extract_constant(extract):
         loc.get(msg_id)
     """)
     assert [e.msgid for e in po_file] == ["oh hi mark"]
+
+
+def test_extract_comment(extract):
+    po_file: polib.POFile = extract("""
+        from l10n import Locales
+        Locales()['en'].get("hello", comment="oh hi mark")
+    """)
+    assert [e.comment for e in po_file] == ["oh hi mark"]
+
+
+def test_extract_plural(extract):
+    po_file: polib.POFile = extract("""
+        from l10n import Locales
+        Locales()['en'].get("{n} bird", plural="{n} birds", n=13)
+    """)
+    assert [e.msgid_plural for e in po_file] == ["{n} birds"]
