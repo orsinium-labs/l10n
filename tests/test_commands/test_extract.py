@@ -57,3 +57,38 @@ def test_extract_context(extract):
         Locales()['en'].get("open", context="a verb")
     """)
     assert [e.msgctxt for e in po_file] == ["a verb"]
+
+
+def test_detect_formatting(extract):
+    po_file: polib.POFile = extract("""
+        from l10n import Locales
+        Locales()['en'].get("hello {username}").format(username="world")
+    """)
+    assert [e.flags for e in po_file] == [["python-brace-format"]]
+
+
+def test_detect_metadata(extract):
+    po_file: polib.POFile = extract("""
+        from l10n import Locales
+        Locales()['en'].get("open", context="a verb")
+    """)
+    m = po_file.metadata
+    assert m['Project-Id-Version'] == 'project-test 0.0.0'
+    assert m['POT-Creation-Date'] == m['PO-Revision-Date']
+    assert m['Language'] == 'ru'
+    assert m['Plural-Forms'].startswith('nplurals=3; plural=')
+
+
+def test_update_existing(extract):
+    extract("""
+        from l10n import Locales
+        Locales()['en'].get("hello")
+    """)
+    po_file: polib.POFile = extract("""
+        from l10n import Locales
+        Locales()['en'].get("world")
+    """)
+    enew, eold = [e for e in po_file]
+    assert enew.msgid == "world"
+    assert eold.msgid == "hello"
+    assert eold.obsolete

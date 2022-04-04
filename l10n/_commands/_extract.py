@@ -59,8 +59,12 @@ class Extract(Command):
         if self.args.lang:
             yield self.args.lang
             return
+        found = False
         for po_file in project.po_root.iterdir():
+            found = True
             yield po_file.stem
+        if not found:
+            yield 'en'
 
     def _msg_to_entry(self, msg: Message) -> polib.POEntry:
         kwargs: dict[str, Any] = {}
@@ -77,22 +81,24 @@ class Extract(Command):
             msgid=msg.text,
             msgstr='',
             occurrences=[(msg.file_name, msg.line)],
+            flags=flags,
             **kwargs,
         )
 
     def _set_meta(self, project: Project, po_file: polib.POFile, lang: str) -> None:
         now = datetime.fromisoformat(self.args.now).strftime('%F %H:%M%z')
         plurals = PLURALS.get(lang, GERMANIC)
+        meta = po_file.metadata
 
-        po_file.metadata['Project-Id-Version'] = f'{project.name} {project.version}'
-        po_file.metadata.setdefault('Report-Msgid-Bugs-To', project.bug_tracker)
-        po_file.metadata.setdefault('POT-Creation-Date', now)
-        po_file.metadata['PO-Revision-Date'] = now
-        po_file.metadata.setdefault('Last-Translator', project.author)
-        po_file.metadata.setdefault('Language-Team', project.author)
-        po_file.metadata.setdefault('Language', lang)
-        po_file.metadata.setdefault('MIME-Version', '1.0')
-        po_file.metadata.setdefault('Content-Type', 'text/plain; charset=UTF-8')
-        po_file.metadata.setdefault('Content-Transfer-Encoding', '8bit')
-        po_file.metadata.setdefault('Plural-Forms', str(plurals))
-        po_file.metadata['Generated-By'] = f'l10n {l10n.__version__}'
+        meta['Project-Id-Version'] = f'{project.name} {project.version}'
+        meta.setdefault('Report-Msgid-Bugs-To', project.bug_tracker)
+        meta.setdefault('POT-Creation-Date', now)
+        meta['PO-Revision-Date'] = now
+        meta.setdefault('Last-Translator', project.author)
+        meta.setdefault('Language-Team', project.author)
+        meta.setdefault('Language', lang)
+        meta.setdefault('MIME-Version', '1.0')
+        meta.setdefault('Content-Type', 'text/plain; charset=UTF-8')
+        meta.setdefault('Content-Transfer-Encoding', '8bit')
+        meta.setdefault('Plural-Forms', str(plurals))
+        meta['Generated-By'] = f'l10n {l10n.__version__}'
