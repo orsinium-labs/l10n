@@ -19,7 +19,7 @@ class Translate(Command):
         )
         parser.add_argument(
             '--src-lang', default='en',
-            help='the language used for messages',
+            help='the language used for messages (msgid)',
         )
 
     def run(self) -> int:
@@ -29,17 +29,21 @@ class Translate(Command):
         for po_path in project.po_root.iterdir():
             if po_path.suffix != '.po':
                 continue
-            print(po_path.stem)
+            self.print(po_path.stem)
+            translated = 0
             po_file = polib.pofile(str(po_path))
             for entry in po_file:
-                if not entry.msgstr:
-                    translation = translator.translate(
-                        entry.msgid,
-                        src=self.args.src_lang,
-                        dest=po_file.metadata.get('Language', po_path.stem),
-                    )
-                    entry.msgstr = translation.text
-                    if 'fuzzy' not in entry.flags:
-                        entry.flags.append('fuzzy')
-            po_file.save(str(po_path))
+                if entry.msgstr:
+                    continue
+                translation = translator.translate(
+                    entry.msgid,
+                    src=self.args.src_lang,
+                    dest=po_file.metadata.get('Language', po_path.stem),
+                )
+                entry.msgstr = translation.text
+                if 'fuzzy' not in entry.flags:
+                    entry.flags.append('fuzzy')
+                translated += 1
+            po_file.save()
+            self.print(f'  translated: {translated}')
         return 0

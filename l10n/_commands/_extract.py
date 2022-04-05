@@ -53,6 +53,7 @@ class Extract(Command):
                     target_file = template_file
                 self._set_meta(project, target_file, lang)
                 target_file.save(str(file_path))
+                self.print(f'  extracted: {len(entries)}')
         return 0
 
     def _langs_for(self, project: Project) -> Iterator[str]:
