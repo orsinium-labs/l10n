@@ -32,13 +32,16 @@ class Translate(Command):
             self.print(po_path.stem)
             translated = 0
             po_file = polib.pofile(str(po_path))
+            dest_lang = po_file.metadata.get('Language', po_path.stem)
+            dest_lang = dest_lang.split('_')[0]
+            dest_lang = dest_lang.split('-')[0]
             for entry in po_file:
                 if entry.msgstr:
                     continue
                 translation = translator.translate(
                     entry.msgid,
                     src=self.args.src_lang,
-                    dest=po_file.metadata.get('Language', po_path.stem),
+                    dest=dest_lang,
                 )
                 entry.msgstr = translation.text
                 if 'fuzzy' not in entry.flags:

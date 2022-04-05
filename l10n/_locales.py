@@ -18,7 +18,7 @@ class Locales:
         path: where compiled locales are located.
         format: file name template for compiled locales.
     """
-    path: Path
+    _path: Path | None
     format: str
 
     def __init__(
@@ -26,9 +26,7 @@ class Locales:
         path: Path | None = None,
         format: str = '{language}.mo',
     ) -> None:
-        if path is None:
-            path = self._find_catalog()
-        self.path = path
+        self._path = path
         self.format = format
 
     def get(self, language: str) -> Locale | None:
@@ -38,10 +36,17 @@ class Locales:
         if path.exists():
             return Locale(path)
         language = language.split('_')[0]
+        language = language.split('-')[0]
         path = self._path_to(language)
         if path.exists():
             return Locale(path)
         return None
+
+    @cached_property
+    def path(self) -> Path:
+        if self._path is not None:
+            return self._path
+        return self._find_catalog()
 
     @cached_property
     def languages(self) -> frozenset[str]:
@@ -71,6 +76,13 @@ class Locales:
         """The current system language detected from env vars.
         """
         return locale.getdefaultlocale()[0]
+
+    def reset_cache(self) -> None:
+        path = self._path
+        format = self.format
+        vars(self).clear()
+        self._path = path
+        self.format = format
 
     # PRIVATE
 
