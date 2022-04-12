@@ -26,4 +26,4 @@ def test_translate_simple(translate):
     e = po[0]
     assert e.msgid == 'Hello world'
     assert e.flags == ['fuzzy']
-    assert e.msgstr == 'Привет мир'
+    assert e.msgstr == 'Привет, мир'

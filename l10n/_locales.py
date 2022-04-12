@@ -34,12 +34,12 @@ class Locales:
         """
         path = self._path_to(language)
         if path.exists():
-            return Locale(path)
+            return Locale(path, language=language)
         language = language.split('_')[0]
         language = language.split('-')[0]
         path = self._path_to(language)
         if path.exists():
-            return Locale(path)
+            return Locale(path, language=language)
         return None
 
     @cached_property

@@ -4,7 +4,6 @@ import datetime
 from decimal import Decimal
 import threading
 import gettext
-from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
 from typing import Tuple, Union
@@ -16,14 +15,21 @@ MsgID = Union[SingularID, PluralID]
 locale_lock = threading.Lock()
 
 
-@dataclass
 class Locale:
-    path: Path
+    def __init__(self, path: Path | None = None, *, language: str | None = None) -> None:
+        self.path = path
+        self._lang = language
 
     def reset_cache(self) -> None:
+        """Reset all the cached values for the locale object.
+
+        Use it if you need to reload the mo file.
+        """
         path = self.path
+        lang = self._lang
         vars(self).clear()
         self.path = path
+        self._lang = lang
 
     def get(
         self,
@@ -33,7 +39,8 @@ class Locale:
         n: int | None = None,
         comment: str = '',
     ) -> str:
-        """
+        """Get translation for the message from the catalog (mo file).
+
         Args:
             message: the message to translate.
                 If no translation found, the message itself will be used.
@@ -64,39 +71,75 @@ class Locale:
 
     @property
     def language(self) -> str:
+        """The language of the Locale.
+        """
+        if self._lang:
+            return self._lang
         return self._headers.get('language', '')
 
     def format_date(self, date: datetime.date) -> str:
+        """Format date.
+
+        You need the locale do be compiled in your OS.
+        """
         format = self._get_locale_info(locale.D_FMT)
         return date.strftime(format)
 
     def format_time(self, time: datetime.time) -> str:
+        """Format time.
+
+        You need the locale do be compiled in your OS.
+        """
         format = self._get_locale_info(locale.T_FMT)
         return time.strftime(format)
 
     def format_datetime(self, dt: datetime.datetime) -> str:
+        """Format date and time.
+
+        You need the locale do be compiled in your OS.
+        """
         format = self._get_locale_info(locale.D_T_FMT)
         return dt.strftime(format)
 
     def format_month(self, n: int, *, abbreviate: bool = False) -> str:
+        """Format the month number into its name.
+
+        You need the locale do be compiled in your OS.
+        """
         prefix = 'AB' if abbreviate else ''
         info_key = getattr(locale, f'{prefix}MON_{n}')
         return self._get_locale_info(info_key)
 
     def format_dow(self, n: int, *, abbreviate: bool = False, sunday: int = 0) -> str:
+        """Format the day of week.
+
+        You need the locale do be compiled in your OS.
+
+        Args:
+            abbreviate: Use the short version of the DoW.
+            sunday: Depending on your country and if you count from 0 or 1,
+                different numbers correspond to a different day of week.
+                The sunday argument allows you to specify what number is Sunday for you.
+                By default, it is `0` assuming that the first DoW is Sunday
+                and you count days from 0 to 6.
+        """
         if sunday not in {0, 1, 6, 7}:
             raise TypeError('invalid value for sunday')
-        n = n % 7
+        n = (n - 1) % 7 + 1
         if sunday in (0, 7):
             n += 1
             if n == 8:
                 n = 1
+        elif sunday == 6:
+            n = (n - 6) % 7 + 1
         prefix = 'AB' if abbreviate else ''
         info_key = getattr(locale, f'{prefix}DAY_{n}')
         return self._get_locale_info(info_key)
 
     @cached_property
     def currency_symbol(self) -> str:
+        """The symbol used to denote the currency
+        """
         return self._get_locale_info(locale.CRNCYSTR)[1:]
 
     def format_currency(
@@ -106,6 +149,13 @@ class Locale:
         grouping: bool = False,
         international: bool = False,
     ) -> str:
+        """Format a price in the locale currency.
+
+        1. The locale currency symbol will be added.
+        2. The currency symbol will be placed in the right position.
+        3. The minus for negative numbers will be placed in the right position.
+        4. The locale decimal separator will be used.
+        """
         with self._context():
             return locale.currency(
                 val,
@@ -159,7 +209,7 @@ class Locale:
         path = Path('/usr/share/locale') / self.language / 'LC_MESSAGES' / name
         if not path.exists():
             return None
-        return Locale(path)
+        return Locale(path, language=self.language)
 
     def _get_locale_info(self, info_key: int) -> str:
         with self._context():
@@ -177,6 +227,8 @@ class Locale:
 
     @cached_property
     def _messages(self) -> dict[MsgID, str]:
+        if self.path is None:
+            raise RuntimeError('path to mo file is not specified for the Locale')
         with self.path.open('rb') as stream:
             tr = gettext.GNUTranslations(stream)    # type: ignore[arg-type]
         self._plural_id = tr.plural                 # type: ignore
@@ -190,3 +242,15 @@ class Locale:
 
     def _plural_id(self, n: int) -> int:
         return int(n != 1)
+
+    # MAGIC METHODS
+
+    def __repr__(self) -> str:
+        return f'{type(self).__name__}(path={self.path}, language={self._lang})'
+
+    def __eq__(self, other):
+        if not isinstance(other, Locale):
+            return NotImplemented
+        if self.path:
+            return self.path == other.path
+        return self._lang == other._lang
