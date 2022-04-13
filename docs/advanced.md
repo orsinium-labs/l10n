@@ -22,12 +22,31 @@
 
 ## Localizing dates and numbers
 
-## Add locales to Linux
+To use these functions, you have to install all needed locales in your OS. On Linux, you can list all installed locales using `locale -a` and install a new one using `sudo locale-gen ru_RU.UTF-8The same should also work for OS X.
 
-To use some functions, you have to install all needed locales in your OS. This is how to do that on Linux (probably, the same should work for OS X):
+The `Locale` object provides the following lcoalization functions:
 
-1. Check if the locale is installed: `locale -a`. If you see the locale in the list, you don't need to do anything else.
-1. If the locale is not in the list, generate it: `sudo locale-gen ru_RU.UTF-8`.
++ `format_date`
++ `format_time`
++ `format_datetime`
++ `format_month`
++ `format_dow`
++ `format_currency`
++ `format_float`
++ `format_decimal`
++ `format_int`
++ `parse_float`
++ `parse_int`
+
+## Translating languages, countries, and currencies
+
+Locale object also knows how to discover and read some predefined translations installed in your system. On Linux, run `dpkg -s iso-codes` to see if they are installed and if not, install them using `sudo apt install iso-codes`.
+
+The `Locale` object provides the following translation functions:
+
++ `translate_country`
++ `translate_currency`
++ `translate_language`
 
 ## Translating HTML
 

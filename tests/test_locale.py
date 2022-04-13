@@ -167,6 +167,54 @@ def test_format_parse_float__grouping(language, expected):
     assert loc.parse_float(expected) == -16723.34
 
 
+@pytest.mark.parametrize('language, expected', [
+    ('ru', 'Нидерланды'),
+    ('ru_RU', 'Нидерланды'),
+    ('en', 'Netherlands'),
+    ('en_US', 'Netherlands'),
+    ('en_UK', 'Netherlands'),
+    ('hu', 'Hollandia'),
+    ('nl', 'Nederland'),
+    ('nl_NL', 'Nederland'),
+    ('fa_IR', 'هلند'),
+])
+def test_translate_country(language, expected):
+    loc = Locale(language=language)
+    assert loc.translate_country('Netherlands') == expected
+
+
+@pytest.mark.parametrize('language, expected', [
+    ('ru', 'голландский'),
+    ('ru_RU', 'голландский'),
+    ('en', 'Dutch'),
+    ('en_US', 'Dutch'),
+    ('en_UK', 'Dutch'),
+    ('hu', 'holland'),
+    ('nl', 'Nederlands'),
+    ('nl_NL', 'Nederlands'),
+    ('fa_IR', 'هلندی'),
+])
+def test_translate_language(language, expected):
+    loc = Locale(language=language)
+    assert loc.translate_language('Dutch') == expected
+
+
+@pytest.mark.parametrize('language, expected', [
+    ('ru', 'Евро'),
+    ('ru_RU', 'Евро'),
+    ('en', 'Euro'),
+    ('en_US', 'Euro'),
+    ('en_UK', 'Euro'),
+    ('hu', 'euró'),
+    ('nl', 'euro'),
+    ('nl_NL', 'euro'),
+    ('fa_IR', 'Euro'),
+])
+def test_translate_currency(language, expected):
+    loc = Locale(language=language)
+    assert loc.translate_currency('Euro') == expected
+
+
 PATHS = [pytest.param(p, id=p.name) for p in Path('/usr/share/locale').iterdir()]
 
 
