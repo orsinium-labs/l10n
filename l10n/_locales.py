@@ -35,9 +35,8 @@ class Locales:
         path = self._path_to(language)
         if path.exists():
             return Locale(path, language=language)
-        language = language.split('_')[0]
-        language = language.split('-')[0]
-        path = self._path_to(language)
+        short_lang = language.split('_')[0].split('-')[0]
+        path = self._path_to(short_lang)
         if path.exists():
             return Locale(path, language=language)
         return None

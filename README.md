@@ -2,6 +2,8 @@
 
 A library and CLI for translating Python applications and libraries.
 
+Our main design principle is "Simple things should be simple, complex things should be possible". We streamline the workflow that fits 95% of the projects and allow to configure every small detail to make it possible to fit the remaining 5%. Think about l10n as a high-level and friendly library comparing to low-level and less friendly [locale](https://docs.python.org/3/library/locale.html), [gettext](https://docs.python.org/3/library/gettext.html), and [babel](https://babel.pocoo.org/en/latest/).
+
 Features:
 
 + **Simple**. We stripped away all unnecessary steps and concepts. All that's left is what is actually relevant for Python.
@@ -18,6 +20,7 @@ Features:
 + **Small**. We don't include any generated data into the library distribution. Just a little of Python code.
 + **Lazy**. Any data is loaded only when you need it.
 + **Can be used in libraries**. The compiled translations are automatically placed next to your Python code and discovered at runtime.
++ **Versatile**. Most of the libraries in the wild are focused on web applications. This library fits any Python project.
 
 ## l10n in 30 seconds
 

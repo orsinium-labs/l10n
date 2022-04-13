@@ -138,16 +138,41 @@ class Locale:
 
     @cached_property
     def currency_symbol(self) -> str:
-        """The symbol used to denote the currency
+        """The symbol used to denote the currency.
+
+        You need the locale do be compiled in your OS.
         """
         return self._get_locale_info(locale.CRNCYSTR)[1:]
 
+    @cached_property
+    def decimal_dot(self) -> str:
+        """The symbol used to separate whole and fractional parts in decimal numbers.
+
+        Also known as decimal dot, decimal comma, radix character.
+
+        You need the locale do be compiled in your OS.
+        """
+        return self._get_locale_info(locale.RADIXCHAR)
+
+    @cached_property
+    def thousands_separator(self) -> str:
+        """The symbol used to separate groups of digits in big numbers.
+
+        In most of the languages, it separates groups of three digits.
+        In some locales, though, digits are grouped by 4.
+
+        https://en.wikipedia.org/wiki/Decimal_separator
+
+        You need the locale do be compiled in your OS.
+        """
+        return self._get_locale_info(locale.THOUSEP)
+
     def format_currency(
         self,
-        val: int | float | Decimal,
+        val: int | float | Decimal, *,
         symbol: bool = True,
-        grouping: bool = False,
         international: bool = False,
+        grouping: bool = False,
     ) -> str:
         """Format a price in the locale currency.
 
@@ -155,6 +180,11 @@ class Locale:
         2. The currency symbol will be placed in the right position.
         3. The minus for negative numbers will be placed in the right position.
         4. The locale decimal separator will be used.
+
+        Args:
+            symbol: include the currency symbol.
+            international: use international currency symbol.
+            grouping: add thousands separator.
         """
         with self._context():
             return locale.currency(
@@ -164,15 +194,58 @@ class Locale:
                 international=international,
             )
 
-    def float_to_str(self, n: float) -> str:
-        with self._context():
-            return locale.str(n)
+    def format_float(
+        self,
+        n: int | float | Decimal, *,
+        grouping: bool = False,
+        monetary: bool = False,
+        precision: int | None = None,
+        strip_zeros: bool | None = None,
+        exp: bool = False,
+    ) -> str:
+        """Format float or Decimal with the correct decimal dot.
 
-    def str_to_float(self, s: str) -> float:
+        Args:
+            grouping: add thousands separator.
+            monetary: use monetary thousands separator which may be different
+                from a regular one for some locales.
+            precision: if specified, include exactly so many digits in the decimal part.
+            strip_zeros: whatever to remove trailing zeros from the end.
+                If not specified, will be set to `True` only if precision
+                is not specified.
+            exp: if True, represent large numbers in scientific exponent notation.
+        """
+        fmt_suffix = 'g' if exp else 'f'
+        fmt = f'%.{precision}{fmt_suffix}' if precision is not None else '%{fmt_suffix}'
+        with self._context():
+            result = locale.format_string(fmt, n, grouping=grouping, monetary=monetary)
+        if strip_zeros is None:
+            strip_zeros = precision is None
+        if strip_zeros:
+            result = result.rstrip('0')
+        return result
+
+    format_decimal = format_float
+
+    def format_int(self, n: int, grouping: bool = True) -> str:
+        """Format an integer with grouping (thousands separator).
+
+        If you need to show an integer without grouping, you don't need l10n.
+        All languages display whole numbers in arabic numerals in the same way.
+
+        https://en.wikipedia.org/wiki/Arabic_numerals
+        https://en.wikipedia.org/wiki/Decimal_separator
+        """
+        if not grouping:
+            return str(n)
+        with self._context():
+            return f'{n:n}'
+
+    def parse_float(self, s: str) -> float:
         with self._context():
             return locale.atof(s)
 
-    def str_to_int(self, s: str) -> int:
+    def parse_int(self, s: str) -> int:
         with self._context():
             return locale.atoi(s)
 
@@ -223,7 +296,7 @@ class Locale:
             try:
                 yield
             finally:
-                locale.setlocale(locale.LC_ALL, f'{old_lang}.{old_enc}')
+                locale.setlocale(locale.LC_ALL, (old_lang, old_enc))
 
     @cached_property
     def _messages(self) -> dict[MsgID, str]:

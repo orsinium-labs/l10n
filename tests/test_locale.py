@@ -110,6 +110,7 @@ def test_format_dow__sunday(n, sunday, expected):
     ('hu', 'Ft'),
     ('nl', 'EUR'),
     ('nl_NL', 'EUR'),
+    ('fa_IR', 'ریال'),
 ])
 def test_currency_symbol(language, expected):
     loc = Locale(language=language)
@@ -125,10 +126,43 @@ def test_currency_symbol(language, expected):
     ('hu', '-16,00 Ft'),
     ('nl', 'EUR 16,00-'),
     ('nl_NL', 'EUR 16,00-'),
+    ('fa_IR', '-16 ریال'),
 ])
 def test_format_currency(language, expected):
     loc = Locale(language=language)
     assert loc.format_currency(-16) == expected
+
+
+@pytest.mark.parametrize('language, expected', [
+    ('ru', '-16\u202f723'),
+    ('ru_RU', '-16\u202f723'),
+    ('en', '-16,723'),
+    ('en_US', '-16,723'),
+    ('en_UK', '-16,723'),
+    ('hu', '-16.723'),
+    ('nl', '-16.723'),
+    ('nl_NL', '-16.723'),
+    ('fa_IR', '-16,723'),
+])
+def test_format_int(language, expected):
+    loc = Locale(language=language)
+    assert loc.format_int(-16723) == expected
+
+
+@pytest.mark.parametrize('language, expected', [
+    ('ru', '-16\u202f723.34'),
+    ('ru_RU', '-16\u202f723.34'),
+    ('en', '-16,723.34'),
+    ('en_US', '-16,723.34'),
+    ('en_UK', '-16,723.34'),
+    ('hu', '-16.723.34'),
+    ('nl', '-16.723.34'),
+    ('nl_NL', '-16.723.34'),
+    ('fa_IR', '-16,723.34'),
+])
+def test_format_number__grouping(language, expected):
+    loc = Locale(language=language)
+    assert loc.format_number(-16723.34, grouping=True) == expected
 
 
 PATHS = [pytest.param(p, id=p.name) for p in Path('/usr/share/locale').iterdir()]
