@@ -144,25 +144,27 @@ def test_format_currency(language, expected):
     ('nl_NL', '-16.723'),
     ('fa_IR', '-16,723'),
 ])
-def test_format_int(language, expected):
+def test_format_parse_int(language, expected):
     loc = Locale(language=language)
     assert loc.format_int(-16723) == expected
+    assert loc.parse_int(expected) == -16723
 
 
 @pytest.mark.parametrize('language, expected', [
-    ('ru', '-16\u202f723.34'),
-    ('ru_RU', '-16\u202f723.34'),
+    ('ru', '-16\u202f723,34'),
+    ('ru_RU', '-16\u202f723,34'),
     ('en', '-16,723.34'),
     ('en_US', '-16,723.34'),
     ('en_UK', '-16,723.34'),
-    ('hu', '-16.723.34'),
-    ('nl', '-16.723.34'),
-    ('nl_NL', '-16.723.34'),
+    ('hu', '-16.723,34'),
+    ('nl', '-16.723,34'),
+    ('nl_NL', '-16.723,34'),
     ('fa_IR', '-16,723.34'),
 ])
-def test_format_number__grouping(language, expected):
+def test_format_parse_float__grouping(language, expected):
     loc = Locale(language=language)
-    assert loc.format_number(-16723.34, grouping=True) == expected
+    assert loc.format_float(-16723.34, grouping=True) == expected
+    assert loc.parse_float(expected) == -16723.34
 
 
 PATHS = [pytest.param(p, id=p.name) for p in Path('/usr/share/locale').iterdir()]

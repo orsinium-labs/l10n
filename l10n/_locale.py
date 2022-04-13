@@ -216,7 +216,7 @@ class Locale:
             exp: if True, represent large numbers in scientific exponent notation.
         """
         fmt_suffix = 'g' if exp else 'f'
-        fmt = f'%.{precision}{fmt_suffix}' if precision is not None else '%{fmt_suffix}'
+        fmt = f'%.{precision}{fmt_suffix}' if precision is not None else f'%{fmt_suffix}'
         with self._context():
             result = locale.format_string(fmt, n, grouping=grouping, monetary=monetary)
         if strip_zeros is None:
