@@ -4,7 +4,7 @@ import fnmatch
 import inspect
 import locale
 import re
-from functools import cached_property
+from functools import cached_property, lru_cache
 from pathlib import Path
 from typing import Iterator
 
@@ -40,6 +40,12 @@ class Locales:
         if path.exists():
             return Locale(path, language=language)
         return None
+
+    @lru_cache(maxsize=16)
+    def get_cached(self, language: str) -> Locale | None:
+        """The same as get but caches the returned Locale.
+        """
+        return self.get(language)
 
     @cached_property
     def path(self) -> Path:

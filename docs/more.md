@@ -6,6 +6,7 @@
 + [weblate](https://github.com/WeblateOrg/weblate) is a WebUI for continious translation.
 + [translate](https://github.com/translate/translate) is a CLI tool for different operations on po and mo files, like converting in different formats or showing statistics.
 + [polib](https://github.com/izimobil/polib) is a pure Python tool to work with po files. In case you want to collect some information that isn't covered by tools provided by `translate`.
++ [i18next](https://github.com/i18next/i18next) is a JS library for translating frontend.
 
 ## Further reading
 

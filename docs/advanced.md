@@ -113,7 +113,7 @@ The `Locale` object provides the following translation functions:
 
 If you need to translate messages outside of Python code, you'll need other tools in addition to l10n. The main focus of l10n is only Python: "Do one thing and do it well". There are some of our favorites for JS:
 
-+ [i18next](https://github.com/i18next/i18next) for translating messages
++ [i18next](https://github.com/i18next/i18next) for translating messages.
 + [Format.js](https://formatjs.io/) for numbers, date, and time.
 + [Angular](https://angular.io/guide/i18n-overview) has some solutions out-of-the-box.
 
@@ -121,3 +121,17 @@ Often, however, it can be a good idea to keep all translations in one place, ins
 
 + If you use a template language like [Jinja2](https://palletsprojects.com/p/jinja/) or [Genshi](https://genshi.edgewall.org/), you can extract translations on the Python side and pass inside the template already translated strings.
 + If you have some dynamic content to be rendered on the client side, you can have a thin client and provide for JS code an API that will return already translated messages.
+
+## Performance and hot reload
+
+If you have a long-running app that should not be restarted when you update translations, you should know how l10n caches things:
+
++ We use [functools.cached_property](https://docs.python.org/3/library/functools.html#functools.cached_property) for caching heavy things. That means, when you request them for the first time, they get cached forever.
++ `l10n.Locales` caches the path to locales directory and which languages are available when you request the first locale.
++ `l10n.Locale` caches all the messages when you request the first one.
++ You can reset the cache by calling the `reset_cache` method of `l10n.Locale` or `l10n.Locales`.
++ Cache is the local to the instance. So, if you create a new instance of `l10n.Locales` (or get a new `l10n.Locale` from the catalog), it doesn't have the old cache.
+
+For example, in getting started tutorial we have `locales = Locales()` at the module-level and `loc = locales[lang]` inside the function. So, adding a new language will require to restart the app but changing anything for an existing language won't.
+
+If you don't care about hot reload and want to cache the content of each locale, use `Locales.get_cached` instead of `Locales.get`. Keep in mind, however, that all the languages you have will be in memory all the time. Well, not all of them, only 16 recently used ones (using [functools.lru_cache](https://docs.python.org/3/library/functools.html#functools.lru_cache)). If you want to have a smarter caching, make your own wrapper function. You need to find your own balance between performance and memory ocnsumption.

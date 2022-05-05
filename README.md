@@ -71,3 +71,5 @@ say_hello(lang='uk')
 ```
 
 If you want to manually adjust the translation text, just edit the `languages/en.po` file and run `compile` again. You don't even need to restart your app!
+
+See [DOCUMENTATION](./docs/) to get started.
