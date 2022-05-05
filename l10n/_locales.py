@@ -99,8 +99,12 @@ class Locales:
 
     @staticmethod
     def _find_catalog() -> Path:
-        for frame in inspect.stack()[2:]:
+        for frame in inspect.stack():
+            if frame.filename == __file__:
+                continue
             file_path = Path(frame.filename)
+            if file_path.name == 'functools.py':
+                continue
             for dir_path in file_path.parents:
                 catalog_path = dir_path / 'locales'
                 if dir_path.exists():

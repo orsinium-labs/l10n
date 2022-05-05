@@ -67,7 +67,19 @@ Another interesting flag is "obsolete". When you run `l10n extract`, it will mar
 
 ## Including additional strings
 
-...
+If you need to include into your translation files some strings that aren't explicitly used in the code, you can, well, use them in the code. If you want to avoid evaluating them in runtime, use the fact that `l10n extract` works on top of a static type checker:
+
+```python
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from l10n import Locales
+    loc = Locales()['en']
+    loc.get('hello world')
+    loc.get('oh hi mark')
+```
+
+If you already have the strings explicitly listed somewhere and you don't want to duplicate them in the Python code, consider extracting them using [xgettext](https://www.gnu.org/software/gettext/manual/html_node/xgettext-Invocation.html) and then merging into the po files with [msgcat](https://www.gnu.org/software/gettext/manual/html_node/msgcat-Invocation.html).
 
 ## Localizing dates and numbers
 
