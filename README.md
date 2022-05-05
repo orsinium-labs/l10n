@@ -38,7 +38,7 @@ locales = Locales()
 
 def say_hello(lang='en'):
     loc = locales[lang]
-    msg = loc.get("Hello, world!")
+    msg = loc.get('Hello, world!')
     print(msg)
 ```
 

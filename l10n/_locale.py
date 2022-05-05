@@ -66,7 +66,7 @@ class Locale:
 
         if translation is not None:
             return translation
-        if n is not None and n > 1:
+        if n is not None and n != 1:
             return plural or message
         return message
 
