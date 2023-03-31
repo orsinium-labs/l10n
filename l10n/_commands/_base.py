@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import TextIO
 
 
-@dataclass
+@dataclass(frozen=True)
 class Command:
     args: Namespace
     stream: TextIO = sys.stdout

@@ -44,7 +44,7 @@ def find_project_root(start_path: Path) -> Path:
     return Path()
 
 
-@dataclass
+@dataclass(frozen=True)
 class Project:
     root: Path
 

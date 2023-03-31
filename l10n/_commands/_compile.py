@@ -22,6 +22,10 @@ class Compile(Command):
             '--no-fuzzy', action='store_true',
             help='do not include fuzzy translations',
         )
+        parser.add_argument(
+            '--allow-empty', action='store_true',
+            help='allow emitting `.mo` for untranslated `.po` files',
+        )
 
     def run(self) -> int:
         project_root = find_project_root(self.args.path)
@@ -42,7 +46,7 @@ class Compile(Command):
 
             # check if there is at least one translated entry
             translated = sum(e.translated() for e in po_file)
-            if not translated:
+            if not self.args.allow_empty and not translated:
                 self.print('  no translated strings found')
                 code += 1
                 continue

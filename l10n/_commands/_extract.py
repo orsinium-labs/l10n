@@ -17,14 +17,27 @@ from ._base import Command
 
 
 class Extract(Command):
-    """Generate a `.po` file for a language based on messages in the code.
+    """Generate a `.po` file for a language based on messages in source code.
     """
     @staticmethod
     def init_parser(parser: ArgumentParser) -> None:
-        parser.add_argument('--path', type=Path, default=Path())
-        parser.add_argument('--lang')
+        parser.add_argument(
+            '--path', type=Path, default=Path(),
+            help='path to the project root directory',
+        )
+        parser.add_argument(
+            '--lang',
+            help='language to generate a PO file for',
+        )
+        parser.add_argument(
+            '--echo', action='store_true',
+            help='set msgstr to the same value as msgid',
+        )
         now = datetime.now(timezone.utc).astimezone()
-        parser.add_argument('--now', default=now.isoformat())
+        parser.add_argument(
+            '--now', default=now.isoformat(),
+            help='the current time in ISO format'
+        )
 
     def run(self) -> int:
         files: defaultdict[Path, list[polib.POEntry]]
@@ -80,7 +93,7 @@ class Extract(Command):
             flags.append('python-brace-format')
         return polib.POEntry(
             msgid=msg.text,
-            msgstr='',
+            msgstr=msg.text if self.args.echo else '',
             occurrences=[(msg.file_name, msg.line)],
             flags=flags,
             **kwargs,
@@ -88,7 +101,8 @@ class Extract(Command):
 
     def _set_meta(self, project: Project, po_file: polib.POFile, lang: str) -> None:
         now = datetime.fromisoformat(self.args.now).strftime('%F %H:%M%z')
-        plurals = PLURALS.get(lang, GERMANIC)
+        short_lang = lang.split('-')[0].split('_')[0]
+        plurals = PLURALS.get(short_lang, GERMANIC)
         meta = po_file.metadata
 
         meta['Project-Id-Version'] = f'{project.name} {project.version}'
