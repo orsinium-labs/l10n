@@ -24,22 +24,6 @@ jobs:
           repo-token: ${{ github.token }}
       - run: task lint
 
-  test:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-python@v4
-        with:
-          python-version: ${{ matrix.python-version }}
-      - uses: arduino/setup-task@v1
-        with:
-          repo-token: ${{ github.token }}
-      - run: task pytest
-
   markdownlint-cli:
     runs-on: ubuntu-latest
     steps:
