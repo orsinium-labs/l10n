@@ -13,7 +13,7 @@
 + [Beyond l10n](./more.md) links some helpful tools and resources to find your way around of translating things.
 + [What we stripped away](./removed.md) tells the secret of l10n's simplicity.
 
-Source code is available on GitHub: [github.com/lif4/l10n](https://github.com/lif4/l10n)
+Source code is available on GitHub: [github.com/orsinium-labs/l10n](https://github.com/orsinium-labs/l10n)
 
 ## Pages
 
