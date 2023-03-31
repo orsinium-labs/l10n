@@ -55,6 +55,10 @@ lint = [
     "types-toml",
     "unify",
 ]
+docs = [
+    "sphinx",
+    "myst-parser",
+]
 
 [project.urls]
 Source = "https://github.com/life4/l10n"
