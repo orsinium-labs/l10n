@@ -2,6 +2,7 @@ from argparse import ArgumentParser
 
 from l10n import Locales
 
+
 locales = Locales()
 
 

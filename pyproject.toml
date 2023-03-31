@@ -36,22 +36,32 @@ dependencies = []
 
 [project.optional-dependencies]
 cli = [
+    "mypy",
     "tomli",
     "polib",
     "googletrans==4.0.0rc1",
 ]
 test = [
     "pytest",
+    "pytest-cov",
     "pytest-xdist",
 ]
 lint = [
     "flake8-length",
-    "mypy",
+    "flake8",
     "isort",
+    "mypy",
+    "types-polib",
+    "types-toml",
+    "unify",
+]
+docs = [
+    "sphinx",
+    "myst-parser",
 ]
 
 [project.urls]
-Source = "https://github.com/life4/l10n"
+Source = "https://github.com/orsinium-labs/l10n"
 
 [tool.mypy]
 files = ["l10n", "tests"]
@@ -69,3 +79,28 @@ strict_equality = true
 warn_redundant_casts = true
 warn_unreachable = true
 # warn_unused_ignores = true
+
+[tool.isort]
+profile = "django"
+lines_after_imports = 2
+skip = ".venvs/"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov=l10n",
+    "--cov-report=html",
+    "--cov-report=xml",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-fail-under=72",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING",
+    "    pass",
+    "except ImportError:",
+]
+
+[tool.coverage.run]
+branch = true

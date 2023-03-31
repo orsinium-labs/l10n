@@ -1,14 +1,16 @@
 from pathlib import Path
-import pytest
+
 import polib
-from l10n._cli import main
+import pytest
+
 from l10n import Locale
+from l10n._cli import main
 
 
 @pytest.fixture
 def compile(project_root: Path):
     def f(*entries):
-        po_file = polib.POFile(encoding="UTF-8")
+        po_file = polib.POFile(encoding='UTF-8')
         po_file.metadata['Content-Type'] = 'text/plain; charset=UTF-8'
         po_file.extend(entries)
         po_path = project_root / 'locales' / 'ru.po'
@@ -23,12 +25,12 @@ def compile(project_root: Path):
 
 
 def test_compile_simple(compile):
-    e = polib.POEntry(msgid="hello world", msgstr="привет мир")
+    e = polib.POEntry(msgid='hello world', msgstr='привет мир')
     loc: Locale = compile(e)
     assert loc.get('hello world') == 'привет мир'
 
 
 def test_include_fuzzy(compile):
-    e = polib.POEntry(msgid="hello world", msgstr="привет мир", flags=["fuzzy"])
+    e = polib.POEntry(msgid='hello world', msgstr='привет мир', flags=['fuzzy'])
     loc: Locale = compile(e)
     assert loc.get('hello world') == 'привет мир'

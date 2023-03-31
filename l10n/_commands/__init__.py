@@ -7,6 +7,7 @@ from ._compile import Compile
 from ._extract import Extract
 from ._translate import Translate
 
+
 COMMANDS: Mapping[str, Type[Command]]
 COMMANDS = MappingProxyType(dict(
     compile=Compile,
