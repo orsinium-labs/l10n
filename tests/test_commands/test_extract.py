@@ -1,7 +1,9 @@
 from pathlib import Path
 from textwrap import dedent
-import pytest
+
 import polib
+import pytest
+
 from l10n._cli import main
 
 
@@ -21,7 +23,7 @@ def test_extract_simple(extract):
         from l10n import Locales
         Locales()['en'].get("hello")
     """)
-    assert [e.msgid for e in po_file] == ["hello"]
+    assert [e.msgid for e in po_file] == ['hello']
 
 
 def test_extract_constant(extract):
@@ -32,7 +34,7 @@ def test_extract_constant(extract):
         loc = Locales()['en']
         loc.get(msg_id)
     """)
-    assert [e.msgid for e in po_file] == ["oh hi mark"]
+    assert [e.msgid for e in po_file] == ['oh hi mark']
 
 
 def test_extract_comment(extract):
@@ -40,7 +42,7 @@ def test_extract_comment(extract):
         from l10n import Locales
         Locales()['en'].get("hello", comment="oh hi mark")
     """)
-    assert [e.comment for e in po_file] == ["oh hi mark"]
+    assert [e.comment for e in po_file] == ['oh hi mark']
 
 
 def test_extract_plural(extract):
@@ -48,7 +50,7 @@ def test_extract_plural(extract):
         from l10n import Locales
         Locales()['en'].get("{n} bird", plural="{n} birds", n=13)
     """)
-    assert [e.msgid_plural for e in po_file] == ["{n} birds"]
+    assert [e.msgid_plural for e in po_file] == ['{n} birds']
 
 
 def test_extract_context(extract):
@@ -56,7 +58,7 @@ def test_extract_context(extract):
         from l10n import Locales
         Locales()['en'].get("open", context="a verb")
     """)
-    assert [e.msgctxt for e in po_file] == ["a verb"]
+    assert [e.msgctxt for e in po_file] == ['a verb']
 
 
 def test_detect_formatting(extract):
@@ -64,7 +66,7 @@ def test_detect_formatting(extract):
         from l10n import Locales
         Locales()['en'].get("hello {username}").format(username="world")
     """)
-    assert [e.flags for e in po_file] == [["python-brace-format"]]
+    assert [e.flags for e in po_file] == [['python-brace-format']]
 
 
 def test_detect_metadata(extract):
@@ -89,6 +91,6 @@ def test_update_existing(extract):
         Locales()['en'].get("world")
     """)
     enew, eold = [e for e in po_file]
-    assert enew.msgid == "world"
-    assert eold.msgid == "hello"
+    assert enew.msgid == 'world'
+    assert eold.msgid == 'hello'
     assert eold.obsolete

@@ -5,6 +5,7 @@ import pytest
 
 from l10n._locale import Locale
 
+
 SPHINX_MO = Path('/usr/share/locale/ru/LC_MESSAGES/sphinx.mo')
 
 

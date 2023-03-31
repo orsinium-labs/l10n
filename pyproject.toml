@@ -47,8 +47,10 @@ test = [
 ]
 lint = [
     "flake8-length",
-    "mypy",
+    "flake8",
     "isort",
+    "mypy",
+    "unify",
 ]
 
 [project.urls]
@@ -70,3 +72,27 @@ strict_equality = true
 warn_redundant_casts = true
 warn_unreachable = true
 # warn_unused_ignores = true
+
+[tool.isort]
+profile = "django"
+lines_after_imports = 2
+skip = ".venvs/"
+
+[tool.pytest.ini_options]
+addopts = [
+    "--cov=l10n",
+    "--cov-report=html",
+    "--cov-report=term-missing:skip-covered",
+    "--cov-fail-under=60",
+]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING",
+    "    pass",
+    "except ImportError:",
+]
+
+[tool.coverage.run]
+branch = true

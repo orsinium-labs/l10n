@@ -1,4 +1,5 @@
 from __future__ import annotations
+
 import json
 import subprocess
 import sys
@@ -9,6 +10,7 @@ from typing import Iterator, NamedTuple
 from mypy import types
 from mypy.plugin import MethodContext, Plugin
 from mypy.types import LiteralValue
+
 
 PREFIX = '__L10N__:'
 
