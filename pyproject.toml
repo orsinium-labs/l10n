@@ -61,7 +61,7 @@ docs = [
 ]
 
 [project.urls]
-Source = "https://github.com/life4/l10n"
+Source = "https://github.com/orsinium-labs/l10n"
 
 [tool.mypy]
 files = ["l10n", "tests"]
