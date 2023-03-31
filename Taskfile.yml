@@ -45,7 +45,7 @@ tasks:
       - >
         flit install
         --python {{.TEST_PYTHON}}
-        --extras=test,integrations
+        --extras=test,cli
         --deps=production
         --symlink
   install:lint:
@@ -58,7 +58,7 @@ tasks:
       - >
         flit install
         --python {{.LINT_PYTHON}}
-        --extras=lint,integrations
+        --extras=lint,cli
         --deps=production
         --symlink
   install:docs:
@@ -97,7 +97,7 @@ tasks:
     deps:
       - install:test
     cmds:
-      - "{{.TEST_PYTHON}} -m pytest {{.CLI_ARGS}}"
+      - "{{.TEST_PYTHON}} -m pytest -n 8 {{.CLI_ARGS}}"
   flake8:
     desc: "lint Python code"
     deps:

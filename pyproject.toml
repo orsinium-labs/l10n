@@ -43,6 +43,7 @@ cli = [
 ]
 test = [
     "pytest",
+    "pytest-cov",
     "pytest-xdist",
 ]
 lint = [
@@ -50,6 +51,8 @@ lint = [
     "flake8",
     "isort",
     "mypy",
+    "types-polib",
+    "types-toml",
     "unify",
 ]
 
@@ -82,8 +85,9 @@ skip = ".venvs/"
 addopts = [
     "--cov=l10n",
     "--cov-report=html",
+    "--cov-report=xml",
     "--cov-report=term-missing:skip-covered",
-    "--cov-fail-under=60",
+    "--cov-fail-under=72",
 ]
 
 [tool.coverage.report]

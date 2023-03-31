@@ -1,6 +1,7 @@
 __pycache__/
 .*_cache/
 /.coverage
+/coverage.xml
 /htmlcov/
 /dist/
 /.venvs/

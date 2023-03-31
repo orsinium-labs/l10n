@@ -5,7 +5,7 @@ from contextlib import suppress
 from dataclasses import dataclass
 from functools import cached_property
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 
 try:
@@ -156,7 +156,7 @@ class Project:
     # PRIVATE
 
     @cached_property
-    def _meta(self) -> dict[str, Any]:
+    def _meta(self) -> Mapping[str, Any]:
         path = self.root / 'pyproject.toml'
         if not path.exists():
             return {}
