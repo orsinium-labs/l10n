@@ -30,8 +30,16 @@ class Extract(Command):
             help='language to generate a PO file for',
         )
         parser.add_argument(
+            '--wrap', default=90, type=int,
+            help='wrap msgstr longer than that many characters',
+        )
+        parser.add_argument(
             '--echo', action='store_true',
             help='set msgstr to the same value as msgid',
+        )
+        parser.add_argument(
+            '--allow-duplicates', action='store_true',
+            help='do not check the file for duplicates',
         )
         now = datetime.now(timezone.utc).astimezone()
         parser.add_argument(
@@ -57,10 +65,17 @@ class Extract(Command):
                 self.print(lang)
                 file_path = project.po_root / f'{lang}.po'
 
-                template_file = polib.POFile()
+                template_file = polib.POFile(
+                    wrapwidth=self.args.wrap,
+                    check_for_duplicates=not self.args.allow_duplicates,
+                )
                 template_file.extend(entries)
                 if file_path.exists():
-                    target_file = polib.pofile(str(file_path))
+                    target_file = polib.pofile(
+                        str(file_path),
+                        wrapwidth=self.args.wrap,
+                        check_for_duplicates=not self.args.allow_duplicates,
+                    )
                     target_file.merge(template_file)
                 else:
                     target_file = template_file

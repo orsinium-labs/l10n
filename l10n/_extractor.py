@@ -5,6 +5,7 @@ import subprocess
 import sys
 from pathlib import Path
 from tempfile import NamedTemporaryFile
+from textwrap import dedent
 from typing import Iterator, NamedTuple
 
 from mypy import types
@@ -13,6 +14,14 @@ from mypy.types import LiteralValue
 
 
 PREFIX = '__L10N__:'
+CONFIG = f"""
+    [mypy]
+    plugins = {__name__}
+    follow_imports = skip
+
+    [mypy-l10n.*]
+    follow_imports = normal
+"""
 
 
 class Message(NamedTuple):
@@ -31,7 +40,7 @@ class Message(NamedTuple):
 
 
 def extract_messages(project_path: Path) -> Iterator[Message]:
-    config = f'[mypy]\nplugins = {__name__}'
+    config = dedent(CONFIG)
     with NamedTemporaryFile() as tmp_file:
         tmp_file.write(config.encode())
         tmp_file.flush()
