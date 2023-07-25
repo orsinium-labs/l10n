@@ -39,12 +39,12 @@ cli = [
     "mypy",
     "tomli",
     "polib",
-    "googletrans==4.0.0rc1",
 ]
 test = [
-    "pytest",
+    "googletrans==4.0.0rc1",
     "pytest-cov",
     "pytest-xdist",
+    "pytest",
 ]
 lint = [
     "flake8-length",
