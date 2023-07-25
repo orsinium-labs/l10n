@@ -2,7 +2,6 @@ from argparse import ArgumentParser
 from pathlib import Path
 
 import polib
-from googletrans import Translator
 
 from .._project import Project, find_project_root
 from ._base import Command
@@ -23,6 +22,12 @@ class Translate(Command):
         )
 
     def run(self) -> int:
+        try:
+            from googletrans import Translator
+        except ImportError:
+            msg = 'Please, run `python3 -m pip install googletrans==4.0.0rc1`'
+            raise ImportError(msg)
+
         project_root = find_project_root(self.args.path)
         project = Project(project_root)
         translator = Translator()
