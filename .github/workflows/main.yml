@@ -40,6 +40,10 @@ jobs:
         with:
           repo-token: ${{ github.token }}
       - run: |
+          sudo locale-gen ru_RU.UTF-8
+          sudo locale-gen en_US.ISO8859-1
+          sudo locale-gen hu_HU.ISO8859-2
+          sudo locale-gen nl_NL.ISO8859-1
           sudo locale-gen ${{ env.LANG }}
           sudo update-locale LANG=${{ env.LANG }}
           task test
