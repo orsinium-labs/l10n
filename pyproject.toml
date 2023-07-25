@@ -4,10 +4,8 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "l10n"
-authors = [
-    {name = "Gram", email = "gram@orsinium.dev"},
-]
-license = {file = "LICENSE"}
+authors = [{ name = "Gram", email = "gram@orsinium.dev" }]
+license = { file = "LICENSE" }
 readme = "README.md"
 requires-python = ">=3.7"
 dynamic = ["version", "description"]
@@ -35,17 +33,8 @@ keywords = [
 dependencies = []
 
 [project.optional-dependencies]
-cli = [
-    "mypy",
-    "tomli",
-    "polib",
-]
-test = [
-    "googletrans==4.0.0rc1",
-    "pytest-cov",
-    "pytest-xdist",
-    "pytest",
-]
+cli = ["mypy", "tomli", "polib"]
+test = ["googletrans==4.0.0rc1", "pytest-cov", "pytest-xdist", "pytest"]
 lint = [
     "flake8-length",
     "flake8",
@@ -55,13 +44,13 @@ lint = [
     "types-toml",
     "unify",
 ]
-docs = [
-    "sphinx",
-    "myst-parser",
-]
+docs = ["sphinx", "myst-parser"]
 
 [project.urls]
 Source = "https://github.com/orsinium-labs/l10n"
+
+[project.scripts]
+l10n = "l10n:entrypoint"
 
 [tool.mypy]
 files = ["l10n", "tests"]
