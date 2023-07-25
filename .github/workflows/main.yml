@@ -45,6 +45,7 @@ jobs:
           sudo locale-gen hu_HU.ISO8859-2
           sudo locale-gen nl_NL.ISO8859-1
           sudo locale-gen ${{ env.LANG }}
+          sudo dpkg-reconfigure locales
           sudo update-locale LANG=${{ env.LANG }}
           task test
 
