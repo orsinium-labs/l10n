@@ -24,6 +24,18 @@ jobs:
           repo-token: ${{ github.token }}
       - run: task lint
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: "3.8"
+      - uses: arduino/setup-task@v1
+        with:
+          repo-token: ${{ github.token }}
+      - run: task test
+
   markdownlint-cli:
     runs-on: ubuntu-latest
     steps:
