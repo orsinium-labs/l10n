@@ -50,7 +50,7 @@ docs = ["sphinx", "myst-parser"]
 Source = "https://github.com/orsinium-labs/l10n"
 
 [project.scripts]
-l10n = "l10n:entrypoint"
+l10n = "l10n._cli:entrypoint"
 
 [tool.mypy]
 files = ["l10n", "tests"]
